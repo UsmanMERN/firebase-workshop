@@ -5,54 +5,6 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-            const user = userCredential.user;
-
-            // Retrieve user details from Firestore
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                console.log("User Data:", userDoc.data());
-            } else {
-                console.log("No user data found");
-            }
-
-
-            navigate('/dashboard'); // Redirect after login
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
-    const handleGoogleLogin = async () => {
-        try {
-            const userCredential = await signInWithPopup(auth, googleProvider);
-            const user = userCredential.user;
-
-            // Retrieve user details from Firestore
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                console.log("User Data:", userDoc.data());
-            } else {
-                console.log("No user data found");
-            }
-
-
-            navigate('/dashboard');
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">

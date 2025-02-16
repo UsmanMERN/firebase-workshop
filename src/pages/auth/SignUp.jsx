@@ -5,59 +5,6 @@ import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function SignUp() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
-
-    const handleSignUp = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Store user details in Firestore
-            await setDoc(doc(db, "users", user.uid), {
-                name,
-                email,
-                uid: user.uid,
-                role: ["student"],
-                createdAt: new Date()
-            });
-
-            navigate('/dashboard'); // Redirect after signup
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
-    const handleGoogleSignUp = async () => {
-        try {
-            const userCredential = await signInWithPopup(auth, googleProvider);
-
-            const user = userCredential.user;
-
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
-
-            // Check if user already exists before setting data
-            if (!userSnap.exists()) {
-                await setDoc(userRef, {
-                    name: user.displayName || "Anonymous",
-                    email: user.email,
-                    uid: user.uid,
-                    role: ["student"],
-                    createdAt: new Date(),
-                });
-            }
-
-            navigate('/dashboard');
-        } catch (err) {
-            setError(err.message);
-        }
-    };
-
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
