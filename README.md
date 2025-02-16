@@ -35,7 +35,7 @@ This is a **React.js Dashboard Application** built with **React Router, Ant Desi
 
 ### 1️⃣ Clone the Repository
 ```sh
-git clone https://github.com/firebase-workshop.git
+git clone [https://github.com/firebase-workshop.git](https://github.com/UsmanMERN/firebase-workshop)
 cd firebase-workshop
 ```
 
