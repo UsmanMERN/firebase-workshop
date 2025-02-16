@@ -2,9 +2,57 @@ import React, { useState } from 'react';
 import { auth, db, googleProvider } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function SignUp() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        setError('');
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Store user details in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                name,
+                email,
+                uid: user.uid,
+                role: ["student"],
+                createdAt: new Date()
+            });
+
+            navigate('/dashboard'); // Redirect after signup
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const handleGoogleSignUp = async () => {
+        try {
+            const userCredential = await signInWithPopup(auth, googleProvider);
+
+            const user = userCredential.user;
+
+            // Store user details in Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                name: user.displayName,
+                email: user.email,
+                uid: user.uid,
+                role: ["student"],
+                createdAt: new Date()
+            });
+
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
